@@ -43,13 +43,99 @@ Render the result to the HTML template.
 Publish the website in Localhost.
 
 ## PROGRAM:
+```
+total.html
 
+<html>
+<head>
+<title>GST Bill Calculator</title>
 
+<style>
+.box {
+    width:500px;
+    height:320px;
+    border:dashed 3px black;
+    padding:10px;
+    position:fixed;
+    top:190px;
+    left:500px;
+    text-align:center;
+    background-color:rgb(123, 216, 131);
+}
+</style>
+
+</head>
+
+<body bgcolor="lightblue">
+
+<div class="box">
+
+<h1>Price calculator</h1>
+<h3>VAHINI(25018547)</h3>
+
+<form method="POST">
+{% csrf_token %}
+
+<div>
+<label>Price</label>
+<input type="text" name="price" value="{{p}}" >
+</div>
+<br>
+
+<div>
+<label>GST</label>
+<input type="text" name="GST" value="{{G}}">
+</div>
+<br>
+
+<div>
+<input type="submit" value="Calculate">
+</div>
+<br>
+
+<div>
+<label>Total Bill (₹)</label>
+<input type="text" value="{{total}}">
+</div>
+
+</form>
+</div>
+
+</body>
+</html>
+```
+```
+views.py
+
+from django.shortcuts import render
+def calculate_total(request):
+	p=float(request.POST.get('price','0'))
+	G=float(request.POST.get('GST','0'))
+	total = p+(p*G/100) if request.method=='POST' else 0
+	print("price=",p)
+	print("GST=",G)
+	print("total=",total)
+	return render(request,'vapp/total.html',{'p':p,'G':G,'total':total})
+
+ 
+
+```
+```
+urls.py
+
+from django.contrib import admin
+from django.urls import path
+from vapp import views
+urlpatterns = [
+    path('', views.calculate_total, name='calculate_total'),
+    ]
+
+```
 ## OUTPUT - SERVER SIDE:
-
+![alt text](<Screenshot (47).png>)
 
 ## OUTPUT - WEBPAGE:
-
+![alt text](<Screenshot (48).png>)
 
 ## RESULT:
 The a web page to calculate total bill amount with GST from price and GST percentage using server-side scripts is created successfully.
